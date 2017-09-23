@@ -15,7 +15,7 @@ import thirdlife.db.User;
 
 /*
  * General TODO List:
- * - None. Perfect software.
+ * - Relational integrity in the database (once there are relationships).
  */
 public final class App extends ListenerAdapter
 {   
