@@ -49,6 +49,7 @@ public final class Character extends Model
 		Database.execute(statement);
 	}
 	
+	@Override
 	public Character getIfExists()
 	{
 		PreparedStatement statement = Database.prepareStatement(SQL_SELECT_STATEMENT);
@@ -70,6 +71,7 @@ public final class Character extends Model
 		return null;
 	}
 	
+	@Override
 	public void create()
 	{
 		PreparedStatement statement = Database.prepareStatement(SQL_INSERT_STATEMENT);
@@ -80,6 +82,7 @@ public final class Character extends Model
 		Database.executeUpdate(statement);
 	}
 	
+	@Override
 	public void update()
 	{
 		PreparedStatement statement = Database.prepareStatement(SQL_UPDATE_STATEMENT);
@@ -90,6 +93,7 @@ public final class Character extends Model
 		Database.executeUpdate(statement);
 	}
 	
+	@Override
 	public void delete()
 	{
 		PreparedStatement statement = Database.prepareStatement(SQL_DELETE_STATEMENT);
