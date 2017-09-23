@@ -1,0 +1,7 @@
+thirdlife/bot/App.class
+thirdlife/db/CharacterType.class
+thirdlife/db/IModel.class
+thirdlife/db/Model.class
+thirdlife/db/Character.class
+thirdlife/db/Database.class
+thirdlife/db/User.class
