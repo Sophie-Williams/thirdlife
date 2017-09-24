@@ -22,33 +22,55 @@ public final class Endorse extends Command
 		if(commandArgument.isEmpty())
 		{
 			response = "Endorse a user with '!tl endorse <user>'.";
+			
+			return;
 		}
-		else
+			
+		Pattern pattern = Pattern.compile("^([^ ]+)");
+		
+		Matcher matcher = pattern.matcher(commandArgument);
+		
+		if(matcher.find())
 		{
-			Pattern pattern = Pattern.compile("^([^ ]+)");
+			String nick = matcher.group(1);
 			
-			Matcher matcher = pattern.matcher(commandArgument);
+			User user = new User(nick).getIfExists();
 			
-			if(matcher.find())
+			if(user == null)
 			{
-				String nick = matcher.group(1);
+				response = "No registered users found with nick '" + nick + "'.";
+			}
+			else
+			{
+				Endorsement endorsement = new Endorsement(by_nick, nick);
 				
-				User user = new User(nick).getIfExists();
-    			
-    			if(user == null)
-    			{
-    				response = "No registered users found with nick '" + nick + "'.";
-    			}
-    			else
-    			{
-    				Endorsement endorsement = new Endorsement(by_nick, nick);
-    				endorsement.create();
-    				
-    				user.endorse();
-    				user.update();
-    				
-    				response = "You've endorsed " + user.getNick() + "!";
-    			}
+				if(endorsement.wasToday())
+				{
+					if(by_nick.equals(nick))
+					{
+						response = "Let's not get carried away.";
+					}
+					else
+					{
+						response = nick + " is great and all, but you can only endorse them once a day.";
+					}
+					
+					return;
+				}
+				
+				endorsement.create();
+				
+				user.endorse();
+				user.update();
+				
+				if(by_nick.equals(nick))
+				{
+					response = "Hey! You've endorsed yourself! That's allowed!";
+				}
+				else
+				{
+					response = "You've endorsed " + user.getNick() + "!";
+				}
 			}
 		}
 	}

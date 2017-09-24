@@ -17,7 +17,6 @@ import thirdlife.db.Database;
  * - Relational integrity in the database (once there are relationships).
  * - Probably should write some unit tests.
  * - Show "biggest fan" in "info" command.
- * - Handle endorsing oneself.
  */
 public final class App extends ListenerAdapter
 {   
