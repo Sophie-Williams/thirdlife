@@ -15,7 +15,7 @@ public final class Character extends Model
 			+ " name TEXT NOT NULL, created_at TEXT NOT NULL)";
 	
 	public static final String SQL_SELECT_STATEMENT =
-			"SELECT * FROM " + SQL_TABLE_NAME + " WHERE user_id = ? LIMIT 1";
+			"SELECT * FROM " + SQL_TABLE_NAME + " WHERE name = ? AND user_id = ? LIMIT 1";
 	
 	public static final String SQL_INSERT_STATEMENT =
 			"INSERT INTO " + SQL_TABLE_NAME
@@ -42,6 +42,13 @@ public final class Character extends Model
 		this.name = name;
 		this.user_id = user_id;
 		this.character_type_id = character_type_id;
+		
+		Character character = this.getIfExists();
+		
+		if(character != null)
+		{
+			this.id = character.id;
+		}
 	}
 	
 	public static void createTable()
@@ -56,7 +63,8 @@ public final class Character extends Model
 	{
 		PreparedStatement statement = Database.prepareStatement(SQL_SELECT_STATEMENT);
 		
-		Database.setInteger(statement, 1, user_id);
+		Database.setString(statement, 1, name);
+		Database.setInteger(statement, 2, user_id);
 		
 		ResultSet resultSet = Database.executeQuery(statement); 
 		
@@ -67,7 +75,7 @@ public final class Character extends Model
 			return this;
 		}
 		
-		Database.closeAll(statement);
+		Database.close(statement);
 		
 		return null;
 	}

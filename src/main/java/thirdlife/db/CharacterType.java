@@ -37,6 +37,13 @@ public final class CharacterType extends Model
 		super();
 		
 		this.name = name;
+		
+		CharacterType characterType = this.getIfExists();
+		
+		if(characterType != null)
+		{
+			this.id = characterType.id;
+		}
 	}
 	
 	public static void createTable()
@@ -62,7 +69,7 @@ public final class CharacterType extends Model
 			return this;
 		}
 		
-		Database.closeAll(statement);
+		Database.close(statement);
 		
 		return null;
 	}

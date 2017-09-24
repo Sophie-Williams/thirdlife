@@ -10,6 +10,45 @@ import thirdlife.bot.App;
 
 public final class Database
 {	
+	private static final class SQLiteConnection
+	{
+		private static SQLiteConnection instance = null; 
+		private static Connection connection = null;
+		
+		protected SQLiteConnection(Connection c){
+			connection = c;
+		}
+		
+		public Connection getConnection()
+		{
+			return connection;
+		}
+		
+		public static SQLiteConnection getInstance()
+		{
+			if(instance == null)
+			{
+				try
+				{					
+					Class.forName("org.sqlite.JDBC");
+					
+					connection = DriverManager.getConnection("jdbc:sqlite:SQLiteDB.db");
+					
+					instance = new SQLiteConnection(connection);
+				}
+				catch(Exception e)
+				{
+					System.err.println(e.getClass().getName() + ": " + e.getMessage());
+					
+					System.exit(1);
+				}
+				
+			}
+			
+			return instance;
+		}	
+	}
+	
 	public static void initializeDatabases()
 	{
 		System.out.print("Setting up databases... ");
@@ -17,6 +56,8 @@ public final class Database
 		User.createTable();
 		Character.createTable();
 		CharacterType.createTable();
+		CommandHistoryEntry.createTable();
+		Endorsement.createTable();
 		
 		CharacterType.truncate();
 		Character.truncate();
@@ -26,27 +67,11 @@ public final class Database
 		System.out.println("done.");
 	}
 	
-	public static Connection connection()
-	{
-		Connection connection = null;
-		
-		try
-		{
-			Class.forName("org.sqlite.JDBC");
-		
-			connection = DriverManager.getConnection("jdbc:sqlite:SQLiteDB.db");
-		}
-		catch(Exception e)
-		{
-			System.err.println(e.getClass().getName() + ": " + e.getMessage());
-		}
-		
-		return connection;
-	}
+
 	
 	public static PreparedStatement prepareStatement(String sql)
 	{
-		Connection connection = Database.connection();
+		Connection connection = Database.SQLiteConnection.getInstance().getConnection();
 		
 		PreparedStatement statement = null;
 		
@@ -103,7 +128,7 @@ public final class Database
 		{
 			statement.execute();
 			
-			closeAll(statement);
+			close(statement);
 		}
 		catch(SQLException e)
 		{
@@ -137,7 +162,7 @@ public final class Database
 		{
 			statement.executeUpdate();
 			
-			closeAll(statement);
+			close(statement);
 		}
 		catch(SQLException e)
 		{
@@ -189,13 +214,11 @@ public final class Database
 		return null;
 	}
 	
-	public static void closeAll(PreparedStatement statement)
+	public static void close(PreparedStatement statement)
 	{		
 		try
 		{
 			statement.close();
-
-			statement.getConnection().close();
 		}
 		catch (SQLException e)
 		{

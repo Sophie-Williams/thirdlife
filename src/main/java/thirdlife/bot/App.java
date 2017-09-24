@@ -10,12 +10,18 @@ import org.pircbotx.cap.SASLCapHandler;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.types.GenericMessageEvent;
 
+import thirdlife.db.CommandHistoryEntry;
 import thirdlife.db.Database;
+import thirdlife.db.Endorsement;
 import thirdlife.db.User;
 
 /*
  * General TODO List:
  * - Relational integrity in the database (once there are relationships).
+ * - Probably should write some unit tests.
+ * - Show "biggest fan" in "info" command.
+ * - Handle endorsing oneself.
+ * - Command superclass and individual XXXXXCommand subclasses for command logic.
  */
 public final class App extends ListenerAdapter
 {   
@@ -74,6 +80,9 @@ public final class App extends ListenerAdapter
         	trigger = commandMatcher.group(1);
         	command = commandMatcher.group(2);
         	commandArgument = commandMatcher.group(3);
+        	
+        	CommandHistoryEntry commandHistoryEntry = new CommandHistoryEntry(event.getUser().getNick(), commandMessage);
+        	commandHistoryEntry.create();
         	
         	/* TODO: If sender is bot owner and is properly identified, accept
         	 *       additional commands, like 'debug enable', etc.
@@ -139,12 +148,53 @@ public final class App extends ListenerAdapter
             			{
             				if(user.getNick().equals(event.getUser().getNick()))
             				{
-            					response = "You've been registered since " + user.getCreatedAt() + ".";
+            					response = "That's you!";
+            					response += " Registered since " + user.getCreatedAt() + ".";
+            					response += " Charisma: " + user.getCharisma() + ".";
             				}
             				else
         					{
-            					response = user.getNick() + " has been registered since " + user.getCreatedAt() + ".";
+            					response = user.getNick() + ": ";
+            					response += " Registered since " + user.getCreatedAt() + ".";
+            					response += " Charisma: " + user.getCharisma() + ".";
         					}
+            			}
+            		}
+            		
+            		break;
+            		
+            	case "endorse":
+            		
+            		String by_nick = event.getUser().getNick();
+            		
+            		if(commandArgument.isEmpty())
+            		{
+            			response = "Endorse a user with '!tl endorse <user>'.";
+            		}
+            		else
+            		{
+        				Pattern firstWordPattern = Pattern.compile("^([^ ]+)");
+            			
+            			Matcher firstWordMatcher = firstWordPattern.matcher(commandArgument);
+            			
+            			if(firstWordMatcher.find())
+            			{
+            				nick = firstWordMatcher.group(1);
+            				
+            				user = new User(nick).getIfExists();
+                			
+                			if(user == null)
+                			{
+                				response = "No registered users found with nick '" + nick + "'.";
+                			}
+                			else
+                			{
+                				Endorsement endorsement = new Endorsement(by_nick, nick);
+                				endorsement.create();
+                				
+                				user.endorse();
+                				user.update();
+                			}
             			}
             		}
             		

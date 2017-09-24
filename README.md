@@ -5,6 +5,7 @@ ThIRc| Life (until I think of a better name) is an IRC bot with features to help
 # Existing Features
 
   - Join a channel and register with the bot.
+  - Help your friends gain charisma to improve their reputation.
   - Basically nothing else yet.
 
 # Coming Soon Maybe
@@ -21,3 +22,4 @@ Commands can be run by specifying them after `!tl` in an IRC channel where a ThI
 
   - **register** - Register with the bot. Your account is tied your nick, and is only as secure as your IRC account.
   - **info [nick]** - See registration information for yourself, or another nick if specified.
+  - **endorse [nick]** - Increment your buddies' charisma score. They'll love it!
