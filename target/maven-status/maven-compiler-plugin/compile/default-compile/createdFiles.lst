@@ -1,6 +1,7 @@
 thirdlife/bot/App.class
 thirdlife/db/IModel.class
 thirdlife/db/Database$SQLiteConnection.class
+thirdlife/bot/Response.class
 thirdlife/db/Model.class
 thirdlife/db/Character.class
 thirdlife/db/CommandHistoryEntry.class
@@ -9,8 +10,10 @@ thirdlife/db/Endorsement.class
 thirdlife/command/CommandManager.class
 thirdlife/command/Command.class
 thirdlife/db/Database.class
+thirdlife/command/Endorse$1.class
 thirdlife/db/User.class
 thirdlife/command/Register.class
 thirdlife/db/CharacterType.class
 thirdlife/command/Info.class
 thirdlife/command/ICommand.class
+thirdlife/bot/Response$1.class

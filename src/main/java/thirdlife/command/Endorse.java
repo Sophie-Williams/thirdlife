@@ -1,10 +1,12 @@
 package thirdlife.command;
 
+import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.pircbotx.hooks.types.GenericMessageEvent;
 
+import thirdlife.bot.Response;
 import thirdlife.db.Endorsement;
 import thirdlife.db.User;
 
@@ -15,6 +17,7 @@ public final class Endorse extends Command
 		super(commandMatcher);
 	}
 	
+	@SuppressWarnings("serial")
 	public void execute(GenericMessageEvent event)
 	{
 		String by_nick = event.getUser().getNick();
@@ -52,7 +55,11 @@ public final class Endorse extends Command
 					}
 					else
 					{
-						response = nick + " is great and all, but you can only endorse them once a day.";
+						response = Response.get("endorsed_too_often", new HashMap<String, String>(){
+							{
+								put("to_nick", nick);
+							}
+						});
 					}
 					
 					return;
